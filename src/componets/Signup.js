@@ -1,141 +1,168 @@
-import React from 'react';
-import styled from 'styled-components';
-import Logoo from '../image/logo192.png';
-import { Link } from 'react-router-dom';
-
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import Theme from "../image/theme.png";
+import {auth, db} from './firebse';
 const Signup = () => {
+  const [data, setData ] = useState({
+    name:"",
+    email:"",
+    profile:"",
+    number:"",
+    birth:"",
+    password:""
+
+  })
+  const handalSubmit=async(e)=>{
+    e.preventDefault()
+    try{
+      const result = await auth.createUserWithEmailAndPassword(data)
+      await result.user.updateProfile({
+        fullname:data.name,
+        email:data.email,
+        number:data.number,
+        date:data.birth
+      })
+
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+  let name, value
+  const handalChange=(e)=>{
+    name= e.target.name
+    value = e.target.value
+    setData({...data,[name]:value})
+  }
+
   return (
     <>
-    <Form>
-                    <FormCard>
-                        <FormC>
-
-                            <MainDiv>
-                                <LogoImage >
-                                    <img style={{ width: "40px" }} src={Logoo} />
-                                </LogoImage>
-                                <h5 style={{marginBottom:"24px"}}>Welcome back ! Please Login</h5>
-                                <Label>
-                                    <label>Full Name</label>
-                                </Label>
-                                <Input>
-                                    <input type="name" />
-                                </Input>
-                                <Label>
-                                    <label>Mobile No.</label>
-                                </Label>
-                                <Input>
-                                    <input type="number" />
-                                </Input>
-                                <Label>
-                                    <label>Date of Birth</label>
-                                </Label>
-                                <Input>
-                                    <input type="birth" />
-                                </Input>
-                                <Label>
-                                    <label>Email ID</label>
-                                </Label>
-                                <Input>
-                                    <input type="email" />
-                                </Input>
-                                <Label>
-                                    <label>Password</label>
-                                </Label>
-                                <div></div>
-                                <Input>
-                                    <input type="password" />
-                                </Input>
-                                <Forgot>
-                                    <Div>
-                                        <input className='checkbox' type="checkbox"/>
-                                        <span>Stay Login</span>
-                                    </Div>
-                                    <Div>
-                                        <span>Forgot Password ?</span>
-                                    </Div>
-                                </Forgot>
-                                <Div>
-                                    <button className='button'>Register</button>
-                                </Div>
-                                <Div>
-                                    <button className='button'>
-                                        <Link to="/">
-                                        Login
-                                        </Link>
-                                    </button>
-                                </Div>
-                            
-                            </MainDiv>
-
-                        </FormC>
-                    </FormCard>
-
-        </Form>
+      <SignupContainer>
+      <Form>
+        <FormCard>
+          <FormC>
+            <MainDiv>
+              <div
+                style={{ marginLeft: "256px",marginBottom:"4px" }}
+              >
+                <Link to="/">X</Link>
+              </div>
+              <h5 style={{ marginBottom: "4px" }}>
+              Let's set up your account,<br></br> while
+              we find Matches for you!
+              </h5>
+              <Label>
+                <label>Full Name</label>
+              </Label>
+              <Input>
+                <input name="fullname" type="name" required autoComplete="off" value={data.name} onChange={handalChange} />
+              </Input>
+              <Label>
+                <label>Birth Date</label>
+              </Label>
+              <Input>
+                <input name="date" type="date" required autoComplete="off" value={data.name} onChange={handalChange} />
+              </Input>
+              <Label>
+                <label>Mobile No.</label>
+              </Label>
+              <Input>
+                <input name="number" type="number" required autoComplete="off" value={data.number} onChange={handalChange} />
+              </Input>
+              <Label>
+                <label>Email ID</label>
+              </Label>
+              <Input>
+                <input name="email" type="email" required autoComplete="off" value={data.email} onChange={handalChange}  />
+              </Input>
+              <Label>
+                <label>Password</label>
+              </Label>
+              <div></div>
+              <Input>
+                <input name="password" type="password" required autoComplete="off" value={data.password} onChange={handalChange}  />
+              </Input>
+              <Div>
+                <button type="submit" onClick={handalSubmit} className="button">Register</button>
+              </Div>
+              <Forgot>
+                    <Div>
+                      <Link to="/login"><p>Already a Member? Login</p></Link>
+                    </Div>
+                  </Forgot>
+            </MainDiv>
+          </FormC>
+        </FormCard>
+      </Form>
+      </SignupContainer>
     </>
-  )
-}
+  );
+};
 
 export default Signup;
-
-const Form = styled.div``
-const FormCard = styled.div`
-    position:absolute;
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-    z-index: 1; /* Sit on top */
-    left:500px;
-    top:90px;
+const SignupContainer = styled.div`
+   background-image: url(${Theme});
+   height: 630px;
+   background-size: 100% 650px;
+   align-items: center;
 `
+const Form = styled.div``;
+const FormCard = styled.div`
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  z-index: 1; /* Sit on top */
+`;
 const FormC = styled.div`
-    display: flex;
-    justify-content: center;
-    width:360px;
-    height:100%;
-    background-color: white;
-    padding:2rem;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;`
-const LogoImage = styled.div`
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-    margin: 2rem;`
+  margin-top:44px;
+  margin-bottom:12px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  width: 360px;
+  height: 100%;
+  background-color: white;
+  padding:1rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+`;
 const MainDiv = styled.div`
-    align-items: center;`
+  align-items: center;
+  div > a {
+    text-decoration:none;
+    color:black;
+  }
+`;
 
 const Label = styled.div`
-   >label{
+  > label {
     font-size: 16px;
     font-weight: 400;
     margin: 4px;
-   }`
+  }
+`;
 const Input = styled.div`
-   >input {
+  > input {
     width: 270px;
     height: 40px;
-}`
+  }
+`;
 const Forgot = styled.div`
   display: flex;
-    justify-content: space-between;
-    margin:21px;
-`
+  justify-content:center;
+  margin:16px;
+`;
 const Div = styled.div`
-  .checkbox{
-    margin-right: 9px;
-
-
-}
-.forgot{
-    display: flex;
-    justify-content: space-between;
-    margin: 16px;
-}
-.button{
+  > a{
+    text-decoration:none;
+  }
+  .button {
     width: 270px;
     height: 40px;
     margin-top: 8px;
     background-color: aqua;
     border: 1px solid aqua;
     border-radius: 4px;
-}`
+  }
+`;

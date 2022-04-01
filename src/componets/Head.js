@@ -1,222 +1,314 @@
-import React,{useState} from 'react';
-import styled from 'styled-components';
-import Banner from '../image/banner.jpeg';
-import Logoo from '../image/logo192.png';
-import {Link} from "react-router-dom";
-import {auth} from './firebse';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import Banner from "../image/banner.jpeg";
+import { Link } from "react-router-dom";
+import { auth, db } from "./firebse";
+import Signup from "./Signup";
 
 const Header = () => {
-    const [form, setForm] = useState()
-    const [email,setEmail] = useState('')
-    const [password,setPassword] = useState('') 
+  const [form, setForm] = useState();
+  const [user, setUser] = useState("");
+  const [data, setData] = useState({
+    gender: "",
+    minimum: "",
+    maximum: "",
+    caste: "",
+    mother_tounge: "",
+  });
 
-    const handalSubmit =(e)=>{
-        e.preventDefault()
-        console.log(email,password);
-        setForm(false)
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+  });
+  const handalSubmit = async (e) => {
+    e.preventDefault();
+    console.log(data);
+    db.collection("data").add({ data });
+    setData({
+      gender: "",
+      minimum: "",
+      maximum: "",
+      caste: "",
+      mother_tounge: "",
+    });
+  };
+  handalSubmit();
+  let motherTounge = [
+    "Hindi",
+    "English",
+    "Marathi",
+    "Punjabi",
+    "Bengali",
+    "Gujarati",
+    "Urdu",
+    "Telugu",
+    "Kannada",
+    "English",
+    "Tamil",
+    "Oriya",
+    "Marwari",
+    "More",
+    "Aka",
+    "Arabic",
+    "Arunachali",
+    "Assamese",
+    "Awadhi",
+    "Baluchi",
+    "Bengali",
+    "Bhojpuri",
+    "Bhutia",
+    "Brahui",
+    "Brij",
+    "Burmese",
+    "Chattis,garhi",
+    "Chinese",
+    "Coorgi",
+    "Dogri",
+    "English,",
+    "French",
+    "Garhwali,",
+    "Garo",
+    "Gujarati",
+    "Haryana",
+    "Himachal",
+    "Pahari",
+    "Hindi",
+    "Hindko",
+    "Kakbarak,",
+    "Kanauji",
+    "Kannada",
+    "Kashmiri",
+    "Khandesi",
+    "Khasi",
+    "Konkani,",
+    "Koshali",
+    "Kumaoni",
+    "Kutchi",
+    "Ladakhi",
+    "Lepcha",
+    "Magahi",
+    "Maithili,",
+    "Malay",
+    "Malayal",
+    "Manipuri",
+    "Marathi",
+    "Marwari",
+    "Miji",
+    "Mizo",
+    "Monpa",
+    "Nepali",
+    "Odia",
+    "Pashto",
+    "Persian",
+    "Punjabi",
+    "Rajasthan",
+    "Russian",
+    "Sanskrit",
+    "Santhali",
+    "Seraiki",
+    "Sindhi",
+    "Sinhala",
+    "Sourashtr",
+    "Spanish",
+    "Swedish",
+    "Tagalog",
+    "Tamil",
+    "Telugu",
+    "Tulu",
+    "Urdu",
+    "Other",
+  ];
+  let caste = [
+    "Hindu",
+    "Muslim",
+    "Christian",
+    "Sikh",
+    "Parsi",
+    "Jain",
+    "Buddhist",
+    "Jewish",
+    "No_Religion",
+    "Spiritual",
+    "Other",
+  ];
+  let array = [
+    18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
+    37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
+    56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 67, 68, 69, 70, 71,
+  ];
+  let name, value;
 
-
-    }
+  const handalChange = (e) => {
+    name = e.target.name;
+    value = e.target.value;
+    setData({ ...data, [name]: value });
+  };
   return (
     <>
-    <Head>
+      <Head>
         <Navbar>
-            <Logo>
-                <h1>TruShaadi.com</h1>
-            </Logo>
+          <Logo>
+            <h1>TruShaadi.com</h1>
+          </Logo>
+          {!user ? (
             <Login>
-                <h1><a onClick={() => setForm(true)}>Login</a></h1>
+              <h1>
+                <Link to="/login">Login</Link>
+              </h1>
             </Login>
+          ) : (
+            <Login>
+              <h1>
+                <a
+                  onClick={() => {
+                    auth.signOut();
+                  }}
+                >
+                  Logout
+                </a>
+              </h1>
+            </Login>
+          )}
         </Navbar>
-        <Form>
-        {form ?
-                    <FormCard>
-                        <FormC>
-
-                            <form onSubmit={handalSubmit}>
-                            <MainDiv>
-                                <LogoImage >
-                                    <img style={{ width: "40px" }} src={Logoo} />
-                                </LogoImage>
-                                <h5 style={{marginBottom:"24px"}}>Welcome back ! Please Login</h5>
-                                <Label>
-                                    <label>Email ID</label>
-                                </Label>
-                                <Input>
-                                    <input onChange={(e)=>setEmail(e.target.value)} type="email" />
-                                </Input>
-                                <Label>
-                                    <label>Password</label>
-                                </Label>
-                                <div></div>
-                                <Input>
-                                    <input onChange={(e)=>setPassword(e.target.value)} type="password" />
-                                </Input>
-                                <Forgot>
-                                    <Div>
-                                        <input className='checkbox' type="checkbox"/>
-                                        <span>Stay Login</span>
-                                    </Div>
-                                    <Div>
-                                        <span>Forgot Password ?</span>
-                                    </Div>
-                                </Forgot>
-                                <Div>
-                                    <button type='submit' className='button'>
-                                    Login
-                                    </button>
-                                </Div>
-                                <Div>
-                                    <button className='button'>
-                                        <Link to="/signup">
-                                        Register
-                                        </Link>
-                                    </button>
-                                </Div>
-                                <Forgot>
-                                    <Div>
-                                        <p>New Shaadi ?</p>
-                                    </Div>
-                                    <Div>
-                                       <Link to="/signup">
-                                       <p>Free to SignUp</p>
-                                       </Link>
-                                    </Div>
-                                </Forgot>
-                            </MainDiv>
-                            </form>
-
-                        </FormC>
-                    </FormCard>
-                    : ""
-                }
-
-        </Form>
         <Heading>
-            <h1>Trusted Matrimony & Matchmaking Service</h1>
+          <h1>Trusted Matrimony & Matchmaking Service</h1>
         </Heading>
-        <Nav>
+        <form method="post">
+          <Nav>
             <Look>
-                <h1>I'm looking for a</h1>
-                {/* <input type="text" /> */}
-                <select>
-                    <option>Women</option>
-                    <option>men</option>
-                </select>
+              <h1>I'm looking for a</h1>
+              {/* <input type="text" /> */}
+              <select name="gender" value={data.gender} onChange={handalChange}>
+                <option>Women</option>
+                <option>Men</option>
+              </select>
             </Look>
             <Age>
-                <h1>Aged</h1>
-                <select>
-                    <option>20</option>
-                    <option>21</option>
-                    <option>22</option>
-                </select>to
-                <select>
-                    <option>20</option>
-                    <option>21</option>
-                    <option>22</option>
-                </select>
+              <h1>Aged</h1>
+              <select
+                name="minimum"
+                value={data.minimum}
+                onChange={handalChange}
+              >
+                {array.map((ele) => {
+                  return <option>{ele}</option>;
+                })}
+              </select>
+              to
+              <select
+                name="maximum"
+                value={data.maximum}
+                onChange={handalChange}
+              >
+                {array.map((ele) => {
+                  return <option>{ele}</option>;
+                })}
+              </select>
             </Age>
             <Religion>
-                <h1>of religion</h1>
-                <select>
-                    <option>Hindu</option>
-                    <option>Muslim</option>
-                </select>
+              <h1>of religion</h1>
+              <select name="caste" value={data.caste} onChange={handalChange}>
+                {caste.map((ele) => {
+                  return <option>{ele}</option>;
+                })}
+              </select>
             </Religion>
             <Mother>
-                <h1>and mother tongue</h1>
-                <select>
-                    <option>Marathi</option>
-                    <option>Hindi</option>
-                </select>
+              <h1>and mother tongue</h1>
+              <select
+                name="mother_tounge"
+                value={data.mother_tounge}
+                onChange={handalChange}
+              >
+                {motherTounge.map((ele) => {
+                  return <option>{ele}</option>;
+                })}
+              </select>
             </Mother>
             <Let>
-                <h1>.</h1>
-                <button>Lest Go</button>
+              <h1>.</h1>
+              <Link to="/signup">
+                <button type="submit">Lest Go</button>
+              </Link>
             </Let>
-        </Nav>
-    </Head>
+          </Nav>
+        </form>
+      </Head>
     </>
-  )
-}
+  );
+};
+export default Header;
 const Head = styled.div`
-   background-image:url(${Banner});
-   height:630px;
-   background-size:100% 650px;
-   position:relative;
-   align-items:center;
-`
+  background-image: url(${Banner});
+  height: 630px;
+  background-size: 100% 650px;
+  align-items: center;
+`;
 const Navbar = styled.div`
-   display:flex;
-   justify-content:space-around;
-   position:relative;
-   padding-top:40px;
-`
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+  padding-top: 40px;
+`;
 const Logo = styled.div`
-   color:black;
-   margin-right:20px;`
+  color: black;
+  margin-right: 20px;
+  > h1 {
+    font-family: romon;
+  }
+`;
 const Login = styled.div`
-   color:black;
-   >h1 >a {
-       font-size:24px;
-       text-decoration: underline;
-   }`
+  color: black;
+  > h1 > a {
+    font-size: 20px;
+    text-decoration: none;
+    color: black;
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  }
+`;
 const Heading = styled.div`
-   text-align:center;
-   margin-top:260px;
-   position: relative;
-   color:black;;
-`
-const Form = styled.div``
-const FormCard = styled.div`
-    position:absolute;
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-    z-index: 1; /* Sit on top */
-    left:500px;
-    top:90px;
-`
-const FormC = styled.div`
-    display: flex;
-    justify-content: center;
-    width:360px;
-    height:100%;
-    background-color: white;
-    padding:2rem;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;`
-const LogoImage = styled.div`
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-    margin: 2rem;`
-const MainDiv = styled.div`
-    align-items: center;`
+  text-align: center;
+  margin-top: 260px;
+  position: relative;
+  color: black; ;
+`;
 const Nav = styled.div`
-   position:relative;
-   display:flex;
-   justify-content:center;
-   justify-items:center;
-   flex-wrap:wrap;
-   background-color:#000000;
-   padding:4px;
-   padding-bottom:30px;
-   margin:58px 90px 18px 100px;
-   opacity:0.9;
-`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  flex-wrap: wrap;
+  background-color: #000000;
+  padding: 4px;
+  padding-bottom: 30px;
+  margin: 58px 90px 18px 100px;
+  opacity: 0.9;
+  @media (max-width: 675px) {
+    display: flex;
+    justify-content: start;
+    justify-items: center;
+    flex-wrap: wrap;
+    padding: 2px;
+    margin: 11px 10px 18px 10px;
+  }
+`;
 const Look = styled.div`
-   margin:4px;
-h1{
+  margin: 4px;
+  h1 {
     font-size: 1em;
     font-weight: 400;
     line-height: 1em;
-    color:#FFF; 
+    color: #fff;
     margin-top: 0.7rem;
     margin-bottom: 0.3rem;
-}
-select{
-    width:200px;
+  }
+  select {
+    width: 200px;
     position: relative;
     overflow: hidden;
     background-color: #fff;
@@ -227,20 +319,38 @@ select{
     cursor: default;
     outline: none;
     padding: 5px 5px 5px 5px;
-    transition: all .2s ease;
-}`
+    transition: all 0.2s ease;
+  }
+  @media (max-width: 675px) {
+    select {
+      width: 180px;
+      position: relative;
+      overflow: hidden;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      box-sizing: border-box;
+      color: #333;
+      cursor: default;
+      outline: none;
+      padding: 5px 5px 5px 5px;
+      transition: all 0.2s ease;
+    }
+  }
+`;
+
 const Age = styled.div`
-   margin:4px;
-h1{
+  margin: 4px;
+  h1 {
     font-size: 1em;
     font-weight: 400;
     line-height: 1em;
     color: #f5f5f5;
     margin-top: 0.7rem;
     margin-bottom: 0.3rem;
-}
-select{
-    width:120px;
+  }
+  select {
+    width: 120px;
     position: relative;
     overflow: hidden;
     background-color: #fff;
@@ -251,20 +361,37 @@ select{
     cursor: default;
     outline: none;
     padding: 5px 5px 5px 5px;
-    transition: all .2s ease;
-}`
+    transition: all 0.2s ease;
+  }
+  @media (max-width: 675px) {
+    select {
+      width: 100px;
+      position: relative;
+      overflow: hidden;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      box-sizing: border-box;
+      color: #333;
+      cursor: default;
+      outline: none;
+      padding: 5px 5px 5px 5px;
+      transition: all 0.2s ease;
+    }
+  }
+`;
 const Religion = styled.div`
-   margin:4px;
-h1{
+  margin: 4px;
+  h1 {
     font-size: 1em;
     font-weight: 400;
     line-height: 1em;
     color: #f5f5f5;
     margin-top: 0.7rem;
     margin-bottom: 0.3rem;
-}
-select{
-    width:200px;
+  }
+  select {
+    width: 200px;
     position: relative;
     overflow: hidden;
     background-color: #fff;
@@ -275,20 +402,21 @@ select{
     cursor: default;
     outline: none;
     padding: 5px 5px 5px 5px;
-    transition: all .2s ease;
-}`
+    transition: all 0.2s ease;
+  }
+`;
 const Mother = styled.div`
-   margin:4px;
-h1{
+  margin: 4px;
+  h1 {
     font-size: 1em;
     font-weight: 400;
     line-height: 1em;
     color: #f5f5f5;
     margin-top: 0.7rem;
     margin-bottom: 0.3rem;
-}
-select{
-    width:260px;
+  }
+  select {
+    width: 260px;
     position: relative;
     overflow: hidden;
     background-color: #fff;
@@ -299,22 +427,23 @@ select{
     cursor: default;
     outline: none;
     padding: 5px 5px 5px 5px;
-    transition: all .2s ease;
-}`
+    transition: all 0.2s ease;
+  }
+`;
 const Let = styled.div`
-   margin:4px;
->h1{
+  margin: 4px;
+  > h1 {
     font-size: 1em;
     visibility: visible;
     font-weight: 400;
     line-height: 1em;
-    color:black;
+    color: black;
     margin-top: 0.7rem;
     margin-bottom: 0.3rem;
-}
-button{
-    width:150px;
-    background-color:aqua;
+  }
+  > a > button {
+    width: 150px;
+    background-color: aqua;
     position: relative;
     overflow: hidden;
     border: 1px solid #ccc;
@@ -324,42 +453,6 @@ button{
     cursor: default;
     outline: none;
     padding: 5px 5px 5px 5px;
-    transition: all .2s ease;
-}`
-const Label = styled.div`
-   >label{
-    font-size: 16px;
-    font-weight: 400;
-    margin: 4px;
-   }`
-const Input = styled.div`
-   >input {
-    width: 270px;
-    height: 40px;
-}`
-const Forgot = styled.div`
-  display: flex;
-    justify-content: space-between;
-    margin:21px;
-`
-const Div = styled.div`
-  .checkbox{
-    margin-right: 9px;
-
-
-}
-.forgot{
-    display: flex;
-    justify-content: space-between;
-    margin: 16px;
-}
-.button{
-    width: 270px;
-    height: 40px;
-    margin-top: 8px;
-    background-color: aqua;
-    border: 1px solid aqua;
-    border-radius: 4px;
-}`
-
-export default Header
+    transition: all 0.2s ease;
+  }
+`;

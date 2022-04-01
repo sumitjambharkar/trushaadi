@@ -2,6 +2,7 @@ import styled from "styled-components";
 import first from '../image/home-icon-sprite.jpg';
 import secand from '../image/home-icon-sprite-p.png';
 import third from '../image/home-icon-sprite-c.jpg';
+import { Link } from "react-router-dom";
 
 const Main = () => {
   const array = [
@@ -30,10 +31,14 @@ const Main = () => {
             <>
               <SingDiv>
                 <Image>
-                  <img alt="" style={{ width: "140px", borderRadius: "50%", backgroundColor: "aqua" }} src={ele.img} />
+                <Link to="signup">
+                <img alt="" style={{ width: "140px", borderRadius: "50%", backgroundColor: "aqua" }} src={ele.img} />
+                </Link>
                 </Image>
                 <Title>
-                  <p>{ele.name}</p>
+                <Link to="signup">
+                <p>{ele.name}</p>
+                </Link>
                 </Title>
                 <Span>
                   <p>{ele.detail}</p>
@@ -71,7 +76,14 @@ const Title = styled.p`
   text-align:center;
   color: #00bcd5;
   font-size: 24px;
-  font-weight: 400;`
+  font-weight: 400;
+  > a {
+    text-decoration:none;
+    text-align:center;
+    color: #00bcd5;
+    font-size: 24px;
+    font-weight: 400;
+  }`
 const Span = styled.p`
   text-align:center;
   font-size: 16px;

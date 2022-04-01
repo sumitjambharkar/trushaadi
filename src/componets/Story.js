@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+
+
 
 
 const Story = () => {
@@ -17,6 +20,7 @@ const Story = () => {
                         <h3>VAIBHAV AND ALKA</h3>
                         <p>my self vailbhav and my wif alka my self vailbhav and my wif alka my self vailbhav and my wif alka
                             my self vailbhav and my wif alka
+                            {" "}<Link to="couple">...Read more</Link>
                         </p>
                     </StoryDetails>
                 </StoryDiv>
@@ -28,6 +32,7 @@ const Story = () => {
                         <h3>VAIBHAV AND ALKA</h3>
                         <p>my self vailbhav and my wif alka my self vailbhav and my wif alka my self vailbhav and my wif alka
                             my self vailbhav and my wif alka
+                            {" "}<Link to="couple">...Read more</Link>
                         </p>
                     </StoryDetails>
                 </StoryDiv>
@@ -39,10 +44,15 @@ const Story = () => {
                         <h3>VAIBHAV AND ALKA</h3>
                         <p>my self vailbhav and my wif alka my self vailbhav and my wif alka my self vailbhav and my wif alka
                             my self vailbhav and my wif alka my self vailbhav and my wif alka my self vailbhav and my wif alka
+                            {" "}<Link to="couple">...Read more</Link>
                         </p>
                     </StoryDetails>
                 </StoryDiv>
             </StorySection>
+            <SectionButton>
+            <span>Your story is waiting to happen!</span>
+            <p><Link to='/signup'>Get Started</Link></p>
+            </SectionButton>
         </>
     )
 
@@ -79,10 +89,49 @@ const StoryDetails = styled.div`
   >h3{
     font-size: 22px;
     line-height: 22px;
-  },
+  }
    >p{
     font-size: 15px;
     font-weight:500;
     color: #72727d;
+   }
+   >p >a {
+       text-decoration:none;
    }`
+
+   const SectionButton = styled.div`
+   background-color:red;
+   display:flex;
+   justify-content:center;
+   justify-items:center;
+   flex-wrap:wrap;
+   align-items:center;
+   margin-top:36px;
+   >span {
+       font-size:24px;
+       padding:28px;
+       color:white;
+   }
+   >p {
+    font-size:24px;
+    color:white;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding:8px;
+    border:2px solid white;
+    border-radius:4px;
+    transition:padding 2s;
+   }
+   > p a {
+       text-decoration:none;
+       color:white;
+   }
+    >p :hover {
+    
+    color:white;
+    padding:4px;
+    cursor:pointer;
+  }
+  
+   `
 export default Story;
